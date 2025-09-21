@@ -1,1 +1,1 @@
-# Banking Platform - Compliance & Risk Service
+# MS4 – Compliance & Risk Service (golang, MySQL)
