@@ -30,13 +30,12 @@ type RuleExtras struct {
 	DB        *gorm.DB
 }
 
-type RuleListItem struct {
+type Rule struct {
 	RuleBase
 	RuleExtras
 }
 
 var RuleTables = []any{
-	&AmountThresholdRule{},
-	&BlacklistRule{},
+	&Rule{},
 	&Sanction{},
 }

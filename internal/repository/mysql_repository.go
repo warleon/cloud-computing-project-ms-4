@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"github.com/warleon/ms4-compliance-service/internal/repository/rules"
 	"gorm.io/gorm"
 )
 
@@ -8,38 +9,47 @@ type mysqlRepo struct {
 	db *gorm.DB
 }
 
-func NewMySQLRepository(db *gorm.DB) Repository {
-	return &mysqlRepo{db: db}
-}
-
-func (r *mysqlRepo) CreateRule(rule *Rule) error {
+func (r *mysqlRepo) CreateRule(rule *rules.Rule) error {
 	return r.db.Create(rule).Error
 }
 
-func (r *mysqlRepo) ListRules() ([]Rule, error) {
-	var out []Rule
-	if err := r.db.Find(&out).Error; err != nil {
+func (r *mysqlRepo) ReadRule(id uint) (*rules.Rule, error) {
+	var rule rules.Rule
+	err := r.db.First(&rule, id).Error
+	if err != nil {
+		return nil, err
+	}
+	return &rule, nil
+}
+
+func (r *mysqlRepo) ReadRules(size int, offset int) ([]rules.Rule, error) {
+	var out []rules.Rule
+	if err := r.db.Offset(offset).Limit(size).Find(&out).Error; err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (r *mysqlRepo) FindRulesByType(t string) ([]Rule, error) {
-	var out []Rule
-	if err := r.db.Where("type = ?", t).Find(&out).Error; err != nil {
-		return nil, err
-	}
-	return out, nil
+func (r *mysqlRepo) UpdateRule(rule *rules.Rule) error {
+	return r.db.Updates(rule).Error
 }
 
-func (r *mysqlRepo) CreateAudit(a *AuditLog) error {
-	return r.db.Create(a).Error
+func (r *mysqlRepo) DeleteRule(id uint) error {
+	return r.db.Delete(&rules.Rule{}, id).Error
 }
 
-func (r *mysqlRepo) ListAuditsForCustomer(customerID string, limit int) ([]AuditLog, error) {
+func (r *mysqlRepo) CreateAudit(audit *AuditLog) error {
+	return r.db.Create(audit).Error
+}
+
+func (r *mysqlRepo) ReadAuidits(size int, offset int) ([]AuditLog, error) {
 	var out []AuditLog
-	if err := r.db.Where("customer_id = ?", customerID).Order("created_at desc").Limit(limit).Find(&out).Error; err != nil {
+	if err := r.db.Offset(offset).Limit(size).Find(&out).Error; err != nil {
 		return nil, err
 	}
 	return out, nil
+}
+
+func NewMySQLRepository(db *gorm.DB) Repository {
+	return &mysqlRepo{db: db}
 }

@@ -15,9 +15,11 @@ type AuditLog struct {
 
 // Repository defines DB operations needed by the service.
 type Repository interface {
-	CreateRule(r *rules.RuleListItem) error
-	ReadRule(id uint) (rules.RuleListItem, error)
-	ReadRules() ([]rules.RuleListItem, error)
-	UpdateRule(r rules.RuleListItem) error
+	CreateRule(r *rules.Rule) error
+	ReadRule(id uint) (*rules.Rule, error)
+	ReadRules(size int, offset int) ([]rules.Rule, error)
+	UpdateRule(r *rules.Rule) error
 	DeleteRule(id uint) error
+	CreateAudit(a *AuditLog) error
+	ReadAuidits(size int, offset int) ([]AuditLog, error)
 }
