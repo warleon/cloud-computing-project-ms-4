@@ -1,8 +1,6 @@
 package rules
 
 import (
-	"time"
-
 	"github.com/warleon/ms4-compliance-service/internal/dto"
 	"gorm.io/gorm"
 )
@@ -16,12 +14,11 @@ const (
 
 // Rule represents a compliance rule stored in DB.
 type RuleBase struct {
-	ID          uint      `gorm:"primaryKey" json:"id"`
-	Name        string    `gorm:"size:255;not null" json:"name"`
-	Description string    `gorm:"type:text" json:"description"`
-	Type        RuleType  `gorm:"type:enum('amount_threshold','sanctions_list');not null"`
-	CreatedAt   time.Time `json:"createdAt"`
-	UpdatedAt   time.Time `json:"updatedAt"`
+	gorm.Model
+	Name        string   `gorm:"size:255;not null" json:"name"`
+	Description string   `gorm:"type:text" json:"description"`
+	Type        RuleType `gorm:"type:enum('amount_threshold','sanctions_list');not null"`
+	User        string   `gorm:"index"`
 }
 
 // ComplianceRule is the interface each rule implements.
@@ -31,6 +28,11 @@ type ComplianceRule interface {
 type RuleExtras struct {
 	Threshold *float64
 	DB        *gorm.DB
+}
+
+type RuleListItem struct {
+	RuleBase
+	RuleExtras
 }
 
 var RuleTables = []any{

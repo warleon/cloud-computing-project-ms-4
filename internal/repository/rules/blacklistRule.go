@@ -6,7 +6,7 @@ import (
 )
 
 type Sanction struct {
-	ID    uint   `gorm:"primaryKey"`
+	gorm.Model
 	AccID string `gorm:"size:100;index"` // account/customer identifier
 }
 
