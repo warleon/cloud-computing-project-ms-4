@@ -23,3 +23,7 @@ type Repository interface {
 	CreateAudit(a *AuditLog) error
 	ReadAuidits(size int, offset int) ([]AuditLog, error)
 }
+
+var RepositoryTables = []any{
+	&AuditLog{},
+}
