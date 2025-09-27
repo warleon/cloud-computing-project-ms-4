@@ -18,7 +18,7 @@ type RuleBase struct {
 	Name        string   `gorm:"size:255;not null" json:"name"`
 	Description string   `gorm:"type:text" json:"description"`
 	Type        RuleType `gorm:"type:enum('amount_threshold','sanctions_list');not null"`
-	User        string   `gorm:"index"`
+	Account     string   `gorm:"index"`
 }
 
 // ComplianceRule is the interface each rule implements.
@@ -38,4 +38,5 @@ type Rule struct {
 var RuleTables = []any{
 	&Rule{},
 	&Sanction{},
+	&Decision{},
 }

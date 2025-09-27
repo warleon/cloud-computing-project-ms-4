@@ -50,6 +50,26 @@ func (r *mysqlRepo) ReadAuidits(size int, offset int) ([]AuditLog, error) {
 	return out, nil
 }
 
+func (r *mysqlRepo) FindRulesByType(ruleType string) ([]rules.Rule, error) {
+	var out []rules.Rule
+	if err := r.db.Where("type = ?", ruleType).Find(&out).Error; err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (r *mysqlRepo) IsAccountSanctioned(accID string) (bool, error) {
+	var s rules.Sanction
+	err := r.db.Where(&rules.Sanction{AccID: accID}).First(&s).Error
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return false, nil
+		}
+		return false, err
+	}
+	return true, nil
+}
+
 func NewMySQLRepository(db *gorm.DB) Repository {
 	return &mysqlRepo{db: db}
 }

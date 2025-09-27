@@ -13,6 +13,7 @@ import (
 	"github.com/warleon/ms4-compliance-service/internal/handlers"
 	"github.com/warleon/ms4-compliance-service/internal/middleware"
 	"github.com/warleon/ms4-compliance-service/internal/repository"
+	"github.com/warleon/ms4-compliance-service/internal/repository/rules"
 	"github.com/warleon/ms4-compliance-service/internal/service"
 )
 
@@ -34,11 +35,11 @@ func main() {
 	}
 
 	// run auto-migrations
-	db.AutoMigrate(&repository.Rule{}, &repository.AuditLog{})
+	db.AutoMigrate(rules.RuleTables...)
+	db.AutoMigrate(repository.RepositoryTables...)
 
 	repo := repository.NewMySQLRepository(db)
-	fraudClient := service.NewHTTPFraudClient(cfg.FraudAPIURL)
-	compService := service.NewComplianceService(repo, fraudClient)
+	compService := service.NewComplianceService(repo)
 	handler := handlers.NewComplianceHandler(compService)
 
 	r := gin.New()
@@ -52,9 +53,11 @@ func main() {
 	api := r.Group("/api/v1")
 	{
 		api.POST("/validateTransaction", handler.ValidateTransaction)
-		api.GET("/riskScore/:customerId", handler.GetRiskScore)
 		api.POST("/rules", handler.CreateRule)
+		api.GET("/rules/:id", handler.GetRule)
 		api.GET("/rules", handler.ListRules)
+		api.PUT("/rules/:id", handler.UpdateRule)
+		api.DELETE("/rules/:id", handler.DeleteRule)
 	}
 
 	addr := fmt.Sprintf(":%s", cfg.Port)

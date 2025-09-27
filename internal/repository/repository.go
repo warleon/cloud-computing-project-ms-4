@@ -22,6 +22,10 @@ type Repository interface {
 	DeleteRule(id uint) error
 	CreateAudit(a *AuditLog) error
 	ReadAuidits(size int, offset int) ([]AuditLog, error)
+	// FindRulesByType returns rules filtered by their Type field (e.g. "amount_threshold").
+	FindRulesByType(ruleType string) ([]rules.Rule, error)
+	// IsAccountSanctioned checks whether an account identifier exists in the sanctions table.
+	IsAccountSanctioned(accID string) (bool, error)
 }
 
 var RepositoryTables = []any{
