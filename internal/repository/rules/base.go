@@ -27,7 +27,7 @@ type ComplianceRule interface {
 }
 type RuleExtras struct {
 	Threshold *float64
-	DB        *gorm.DB
+	db        *gorm.DB
 }
 
 type Rule struct {

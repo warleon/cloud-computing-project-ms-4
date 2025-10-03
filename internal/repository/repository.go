@@ -8,9 +8,10 @@ import (
 // AuditLog stores decisions for regulatory reporting.
 type AuditLog struct {
 	gorm.Model
-	TransactionID string         `gorm:"size:100;index" json:"transactionId"`
-	CustomerID    string         `gorm:"size:100;index" json:"customerId"`
-	Decision      rules.Decision `gorm:"size:50" json:"decision"`
+	TransactionID string         `gorm:"index" json:"transactionId"`
+	CustomerID    string         `gorm:"index" json:"customerId"`
+	DecisionID    uint           `json:"decisionId"`
+	Decision      rules.Decision `json:"decision"`
 }
 
 // Repository defines DB operations needed by the service.

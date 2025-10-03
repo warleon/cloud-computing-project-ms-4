@@ -9,24 +9,22 @@ import (
 )
 
 type Config struct {
-	DBHost      string
-	DBPort      string
-	DBUser      string
-	DBPassword  string
-	DBName      string
-	Port        string
-	FraudAPIURL string
+	DBHost     string
+	DBPort     string
+	DBUser     string
+	DBPassword string
+	DBName     string
+	Port       string
 }
 
 func Load() (*Config, error) {
 	cfg := &Config{
-		DBHost:      getEnv("DB_HOST", "localhost"),
-		DBPort:      getEnv("DB_PORT", "3306"),
-		DBUser:      getEnv("DB_USER", "root"),
-		DBPassword:  getEnv("DB_PASSWORD", "secret"),
-		DBName:      getEnv("DB_NAME", "compliance"),
-		Port:        getEnv("PORT", "8080"),
-		FraudAPIURL: getEnv("FRAUD_API_URL", ""),
+		DBHost:     getEnv("DB_HOST", "localhost"),
+		DBPort:     getEnv("DB_PORT", "3306"),
+		DBUser:     getEnv("DB_USER", "root"),
+		DBPassword: getEnv("DB_PASSWORD", "secret"),
+		DBName:     getEnv("DB_NAME", "compliance"),
+		Port:       getEnv("PORT", "8080"),
 	}
 	return cfg, nil
 }

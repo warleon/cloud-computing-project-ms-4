@@ -35,8 +35,12 @@ func main() {
 	}
 
 	// run auto-migrations
-	db.AutoMigrate(rules.RuleTables...)
-	db.AutoMigrate(repository.RepositoryTables...)
+	for _, r := range rules.RuleTables {
+		db.AutoMigrate(r)
+	}
+	for _, r := range repository.RepositoryTables {
+		db.AutoMigrate(r)
+	}
 
 	repo := repository.NewMySQLRepository(db)
 	compService := service.NewComplianceService(repo)
