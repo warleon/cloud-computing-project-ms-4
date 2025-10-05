@@ -18,6 +18,17 @@ func NewComplianceHandler(s *service.ComplianceService) *ComplianceHandler {
 	return &ComplianceHandler{service: s}
 }
 
+// ValidateTransaction godoc
+// @Summary Validate a transaction
+// @Description Validates a transaction against compliance rules and returns a decision
+// @Tags compliance
+// @Accept json
+// @Produce json
+// @Param transaction body dto.Transaction true "Transaction data"
+// @Success 200 {object} rules.Decision
+// @Failure 400 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /api/v1/validateTransaction [post]
 func (h *ComplianceHandler) ValidateTransaction(c *gin.Context) {
 	var tx dto.Transaction
 	if err := c.ShouldBindJSON(&tx); err != nil {
@@ -32,6 +43,17 @@ func (h *ComplianceHandler) ValidateTransaction(c *gin.Context) {
 	c.JSON(http.StatusOK, dec)
 }
 
+// CreateRule godoc
+// @Summary Create a new rule
+// @Description Creates a compliance rule in the system
+// @Tags rules
+// @Accept json
+// @Produce json
+// @Param rule body rules.Rule true "Rule data"
+// @Success 201 {object} rules.Rule
+// @Failure 400 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /api/v1/rules [post]
 func (h *ComplianceHandler) CreateRule(c *gin.Context) {
 	var r rules.Rule
 	if err := c.ShouldBindJSON(&r); err != nil {
@@ -45,6 +67,17 @@ func (h *ComplianceHandler) CreateRule(c *gin.Context) {
 	c.JSON(http.StatusCreated, r)
 }
 
+// ListRules godoc
+// @Summary List all rules
+// @Description Retrieves a paginated list of compliance rules
+// @Tags rules
+// @Accept json
+// @Produce json
+// @Param size query int false "Number of results per page (default 50)"
+// @Param offset query int false "Offset for pagination (default 0)"
+// @Success 200 {array} rules.Rule
+// @Failure 500 {object} map[string]string
+// @Router /api/v1/rules [get]
 func (h *ComplianceHandler) ListRules(c *gin.Context) {
 	size := 50
 	offset := 0
@@ -66,6 +99,17 @@ func (h *ComplianceHandler) ListRules(c *gin.Context) {
 	c.JSON(http.StatusOK, rs)
 }
 
+// GetRule godoc
+// @Summary Get rule by ID
+// @Description Retrieves a specific compliance rule by its ID
+// @Tags rules
+// @Accept json
+// @Produce json
+// @Param id path int true "Rule ID"
+// @Success 200 {object} rules.Rule
+// @Failure 400 {object} map[string]string
+// @Failure 404 {object} map[string]string
+// @Router /api/v1/rules/{id} [get]
 func (h *ComplianceHandler) GetRule(c *gin.Context) {
 	idStr := c.Param("id")
 	id64, err := strconv.ParseUint(idStr, 10, 64)
@@ -81,6 +125,18 @@ func (h *ComplianceHandler) GetRule(c *gin.Context) {
 	c.JSON(http.StatusOK, r)
 }
 
+// UpdateRule godoc
+// @Summary Update an existing rule
+// @Description Updates a compliance rule by ID
+// @Tags rules
+// @Accept json
+// @Produce json
+// @Param id path int true "Rule ID"
+// @Param rule body rules.Rule true "Updated rule data"
+// @Success 200 {object} rules.Rule
+// @Failure 400 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /api/v1/rules/{id} [put]
 func (h *ComplianceHandler) UpdateRule(c *gin.Context) {
 	idStr := c.Param("id")
 	id64, err := strconv.ParseUint(idStr, 10, 64)
@@ -101,6 +157,17 @@ func (h *ComplianceHandler) UpdateRule(c *gin.Context) {
 	c.JSON(http.StatusOK, r)
 }
 
+// DeleteRule godoc
+// @Summary Delete a rule
+// @Description Deletes a compliance rule by ID
+// @Tags rules
+// @Accept json
+// @Produce json
+// @Param id path int true "Rule ID"
+// @Success 204 "No Content"
+// @Failure 400 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /api/v1/rules/{id} [delete]
 func (h *ComplianceHandler) DeleteRule(c *gin.Context) {
 	idStr := c.Param("id")
 	id64, err := strconv.ParseUint(idStr, 10, 64)

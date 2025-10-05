@@ -14,7 +14,7 @@ const (
 
 // Rule represents a compliance rule stored in DB.
 type RuleBase struct {
-	gorm.Model
+	gorm.Model  `swaggerignore:"true"`
 	Name        string   `gorm:"size:255;not null" json:"name"`
 	Description string   `gorm:"type:text" json:"description"`
 	Type        RuleType `gorm:"type:enum('amount_threshold','sanctions_list');not null"`
@@ -27,7 +27,7 @@ type ComplianceRule interface {
 }
 type RuleExtras struct {
 	Threshold *float64
-	db        *gorm.DB
+	db        *gorm.DB `swaggerignore:"true"`
 }
 
 type Rule struct {

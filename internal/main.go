@@ -15,8 +15,19 @@ import (
 	"github.com/warleon/ms4-compliance-service/internal/repository"
 	"github.com/warleon/ms4-compliance-service/internal/repository/rules"
 	"github.com/warleon/ms4-compliance-service/internal/service"
+
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
+
+	_ "github.com/warleon/ms4-compliance-service/docs"
 )
 
+// @title Compliance Rules API
+// @version 1.0
+// @description This is the API documentation for the Compliance Rules service.
+// @host localhost:8080
+// @BasePath /api/v1
+// @schemes http
 func main() {
 	if err := godotenv.Load(); err != nil {
 		log.Println(".env not found, relying on environment variables")
@@ -63,6 +74,8 @@ func main() {
 		api.PUT("/rules/:id", handler.UpdateRule)
 		api.DELETE("/rules/:id", handler.DeleteRule)
 	}
+
+	r.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	addr := fmt.Sprintf(":%s", cfg.Port)
 	logrus.Infof("starting server on %s", addr)

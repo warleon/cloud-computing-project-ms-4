@@ -6,8 +6,8 @@ import (
 )
 
 type Sanction struct {
-	gorm.Model
-	AccID string `gorm:"size:100;index"` // account/customer identifier
+	gorm.Model `swaggerignore:"true"`
+	AccID      string `gorm:"size:100;index"` // account/customer identifier
 }
 
 type BlacklistRule struct {

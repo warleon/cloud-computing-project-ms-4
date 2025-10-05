@@ -1,0 +1,261 @@
+basePath: /api/v1
+definitions:
+  dto.Transaction:
+    properties:
+      amount:
+        format: float64
+        type: number
+      currency:
+        type: string
+      customerID:
+        type: string
+      fromAcc:
+        type: string
+      id:
+        type: string
+      metadata:
+        additionalProperties: {}
+        type: object
+      toAcc:
+        type: string
+    type: object
+  rules.Decision:
+    properties:
+      approved:
+        type: boolean
+      reason:
+        type: string
+    type: object
+  rules.Rule:
+    properties:
+      account:
+        type: string
+      description:
+        type: string
+      name:
+        type: string
+      threshold:
+        format: float64
+        type: number
+      type:
+        $ref: '#/definitions/rules.RuleType'
+    type: object
+  rules.RuleType:
+    enum:
+    - amount_threshold
+    - sanctions_list
+    type: string
+    x-enum-varnames:
+    - RuleTypeAmountThreshold
+    - RuleTypeSanctionsList
+host: localhost:8080
+info:
+  contact: {}
+  description: This is the API documentation for the Compliance Rules service.
+  title: Compliance Rules API
+  version: "1.0"
+paths:
+  /api/v1/rules:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves a paginated list of compliance rules
+      parameters:
+      - description: Number of results per page (default 50)
+        in: query
+        name: size
+        type: integer
+      - description: Offset for pagination (default 0)
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/rules.Rule'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: List all rules
+      tags:
+      - rules
+    post:
+      consumes:
+      - application/json
+      description: Creates a compliance rule in the system
+      parameters:
+      - description: Rule data
+        in: body
+        name: rule
+        required: true
+        schema:
+          $ref: '#/definitions/rules.Rule'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/rules.Rule'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create a new rule
+      tags:
+      - rules
+  /api/v1/rules/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Deletes a compliance rule by ID
+      parameters:
+      - description: Rule ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Delete a rule
+      tags:
+      - rules
+    get:
+      consumes:
+      - application/json
+      description: Retrieves a specific compliance rule by its ID
+      parameters:
+      - description: Rule ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/rules.Rule'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get rule by ID
+      tags:
+      - rules
+    put:
+      consumes:
+      - application/json
+      description: Updates a compliance rule by ID
+      parameters:
+      - description: Rule ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Updated rule data
+        in: body
+        name: rule
+        required: true
+        schema:
+          $ref: '#/definitions/rules.Rule'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/rules.Rule'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update an existing rule
+      tags:
+      - rules
+  /api/v1/validateTransaction:
+    post:
+      consumes:
+      - application/json
+      description: Validates a transaction against compliance rules and returns a
+        decision
+      parameters:
+      - description: Transaction data
+        in: body
+        name: transaction
+        required: true
+        schema:
+          $ref: '#/definitions/dto.Transaction'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/rules.Decision'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Validate a transaction
+      tags:
+      - compliance
+schemes:
+- http
+swagger: "2.0"
